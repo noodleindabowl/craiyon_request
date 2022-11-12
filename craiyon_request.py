@@ -40,7 +40,10 @@ DEFAULTS = {
 # arguments: [elments to remove...]
 JS_REMOVE_ELEMENTS = """
 for (const arg of arguments) {
-    document.querySelector(arg).remove();
+    elem = document.querySelector(arg)
+    if (elem) {
+        elem.remove();
+    }
 }
 """
 
@@ -76,7 +79,7 @@ async def generate_image(session, query, **options):
         raise CraiyonFindError(
             "timed out while finding needed element!") from None
 
-    # remove ads from the DOM
+    # remove ads from the DOM if they exist
     await session.execute_script(JS_REMOVE_ELEMENTS, AD_SELECTORS)
     try:
         session.wait_for_element_gone(options["find_wait"], AD_SELECTORS)
